@@ -1,0 +1,4 @@
+interface IBox : IRenderable
+{
+
+}
