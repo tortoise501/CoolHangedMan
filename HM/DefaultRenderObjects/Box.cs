@@ -5,9 +5,11 @@ class Box : IBox
   public int width { get; set; }
   public int height { get; set; }
   public Palette ColorPalette { get; set; }
+  public int layer { get; set; }
 
-  public Box(int x, int y, int height, int width, Palette palette = Palette.Primary)
+  public Box(int x, int y, int height, int width, Palette palette = Palette.Primary, int layer = 0)
   {
+    this.layer = layer;
     ColorPalette = palette;
     this.y = y;
     this.x = x;

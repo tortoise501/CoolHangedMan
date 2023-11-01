@@ -1,7 +1,8 @@
 class Letter : Point
 {
+  public int layer { get; set; }
   public char c;
-  public Letter(int x, int y, char c, Palette palette = Palette.Primary) : base(x, y, palette)
+  public Letter(int x, int y, char c, Palette palette = Palette.Primary, int layer = 0) : base(x, y, palette, layer)
   {
     this.c = c;
   }

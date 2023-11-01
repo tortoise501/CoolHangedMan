@@ -1,4 +1,5 @@
 using System.Text;
+using System.Linq;
 
 class ConsoleGameRenderer
 {
@@ -98,5 +99,10 @@ class ConsoleGameRenderer
   public void AddObjectToRender(IRenderable objectToRender)
   {
     objectsToRender.Add(objectToRender);
+    objectsToRender = objectsToRender.OrderBy(obj => obj.layer).ToList();
+    IOrderedEnumerable<IRenderable> orderedList = objectsToRender.OrderBy(obj => obj.layer);
+    IOrderedEnumerable<IRenderable> orderedDesList = objectsToRender.OrderByDescending(obj => obj.layer);
+    Console.WriteLine("k");
+
   }
 }

@@ -1,6 +1,7 @@
 
 class Circle : ICircle
 {
+  public int layer { get; set; }
   public int radius { get; set; }
   public int diametr;
   private int _x;
@@ -18,8 +19,9 @@ class Circle : ICircle
   /// width = d
   /// height = d / charRatio(1.65)
   /// </summary>
-  public Circle(int r, int x, int y, Palette palette = Palette.Primary)
+  public Circle(int r, int x, int y, Palette palette = Palette.Primary, int layer = 0)
   {
+    this.layer = layer;
     ColorPalette = palette;
     radius = r;
     this.x = x;

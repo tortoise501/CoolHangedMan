@@ -6,6 +6,7 @@ interface IRenderable
   int width { get; set; }
   int height { get; set; }
   Palette ColorPalette { get; set; }
+  int layer { get; set; }
 }
 
 

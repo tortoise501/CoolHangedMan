@@ -1,5 +1,6 @@
 class StickMan : IRenderable
 {
+  public int layer { get; set; }
   public int x { get; set; }
   public int y { get; set; }
   public int width { get; set; }
@@ -9,8 +10,9 @@ class StickMan : IRenderable
   public Circle Head;
   public Point[] Eyes;
 
-  public StickMan(int X, int Y, int R, Palette palette = Palette.Primary)
+  public StickMan(int X, int Y, int R, Palette palette = Palette.Primary, int layer = 0)
   {
+    this.layer = layer;
     ColorPalette = palette;
     x = X - R;
     y = Y - R;
