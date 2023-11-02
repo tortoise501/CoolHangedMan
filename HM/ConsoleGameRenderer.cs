@@ -102,7 +102,6 @@ class ConsoleGameRenderer
     objectsToRender = objectsToRender.OrderBy(obj => obj.layer).ToList();
     IOrderedEnumerable<IRenderable> orderedList = objectsToRender.OrderBy(obj => obj.layer);
     IOrderedEnumerable<IRenderable> orderedDesList = objectsToRender.OrderByDescending(obj => obj.layer);
-    Console.WriteLine("k");
 
   }
 }
