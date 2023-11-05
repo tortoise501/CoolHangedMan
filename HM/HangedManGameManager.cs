@@ -112,7 +112,7 @@ new string[]{
 
   int lastSelected;// = 0;
   int selectorPos;// = 0;
-  string correctWord;// = words[Random.Shared.Next(words.Length)];
+  public string correctWord { get; private set; }// = words[Random.Shared.Next(words.Length)];
   string guessingWord;// = string.Join("", correctWord.Select(c => "_").ToArray());
   int score;// = 0;
 
@@ -172,21 +172,17 @@ new string[]{
   }
   public void StartRender()
   {
-    while (true)
+    while (!isGameEnded)
     {
-      Render();
+      countdownCounter.line = $"Time Left: {countdown}s";
+      Renderer.RefreshRenderData();
+      Renderer.FastRender();
       Thread.Sleep(1);
     }
   }
-  public void Render()
-  {
-    countdownCounter.line = $"Time Left: {countdown}s";
-    Renderer.RefreshRenderData();
-    Renderer.FastRender();
-  }
   public void StartCountdown()
   {
-    while (true)
+    while (!isGameEnded)
     {
       Thread.Sleep(1000);
       countdown--;
@@ -195,12 +191,13 @@ new string[]{
         isTimeOut = true;
         return;
       }
+      CheckForEnd();
     }
   }
-  public void HandleInput()
+  public void HandleInput(ConsoleKey key)
   {
-    ConsoleKey inputKey = Console.ReadKey().Key;
-    switch (inputKey)
+    if (key == ConsoleKey.NoName) return;
+    switch (key)
     {
       case ConsoleKey.LeftArrow:
         {
@@ -227,17 +224,49 @@ new string[]{
       score = 0;
     }
   }
-  public void DrawAndInput()
+  /// <summary>
+  /// Starts game rendering and logic, returns true if game was won or false if lost
+  /// </summary>
+  /// <returns></returns>
+  public bool DrawAndInput()
   {
     Thread RenderThread = new Thread(StartRender);
     RenderThread.Start();
     Thread CountdownThread = new Thread(StartCountdown);
     CountdownThread.Start();
+    Thread InputThread = new Thread(StartInput);
+    InputThread.Start();
     while (true)
     {
-      HandleInput();
+      CheckForEnd();
+      if (isGameEnded)
+      {
+        if (isGameWon)
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+      Thread.Sleep(100);
     }
   }
+  void StartInput()
+  {
+    while (!isGameEnded)
+    {
+      if (Console.KeyAvailable)
+      {
+
+        ConsoleKey currentKey = Console.ReadKey().Key;
+        HandleInput(currentKey);
+      }
+      if (isGameEnded) return;
+    }
+  }
+
   void SelectLetter(int i)
   {
     alphabetLetters[lastSelected].ColorPalette = Palette.Primary;
@@ -263,22 +292,38 @@ new string[]{
       OnMistake();
     }
   }
-
+  bool isGameEnded = false;
+  bool isGameWon = false;
+  void CheckForEnd()
+  {
+    if (guessingWord.Contains('_'))
+    {
+      if (countdown <= 0)
+      {
+        isGameEnded = true;
+      }
+    }
+    else
+    {
+      isGameEnded = true;
+      isGameWon = true;
+    }
+  }
 
 
   void FillCorrectLetter(char correctChar)
   {
-    score += 5;
+    score += 4;
     guessingWord = string.Join("", guessingWord.Select((c, i) => correctWord[i] == correctChar ? correctWord[i] : guessingWord[i]).ToArray());
     GuessingWordDebug.line = string.Join(" ", guessingWord.ToCharArray());
   }
   void OnFilledLetter()
   {
-    score--;
+    score -= 2;
   }
   void OnMistake()
   {
-    score -= 3;
+    score -= 10;
   }
   bool IsAlreadyFilled(char c) => guessingWord.Contains(c);
   bool IsInCorrectWord(char c) => correctWord.Contains(c);
